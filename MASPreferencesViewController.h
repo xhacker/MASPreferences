@@ -13,8 +13,10 @@
 // Custom NSView to be used for the NSToolbarItem.customView
 // for this preference pane.
 //
-// If this is property is present it will be used instead the
-// toolbarItemImage property is ignored.
+// If this is property is present, the returned NSView will be used
+// in the NSToolbarItem for this view controller.
+//
+// If this property is present, toolbarItemImage will be ignored.
 // Either this property or toolbarItemImage must be implemented.
 @property (nonatomic, readonly, strong) NSView *toolbarItemView;
 
@@ -26,9 +28,9 @@
 @required
 
 // String identifier for this preference pane.
-@property (nonatomic, readonly, strong) NSString *identifier;
+@property (nonatomic, readonly, copy) NSString *identifier;
 
 // Label for this preference pane.
-@property (nonatomic, readonly, strong) NSString *toolbarItemLabel;
+@property (nonatomic, readonly, copy) NSString *toolbarItemLabel;
 
 @end

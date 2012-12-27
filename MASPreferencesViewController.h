@@ -10,13 +10,10 @@
 - (void)viewDidDisappear;
 - (NSView *)initialKeyView;
 
-// Custom NSView to be used for the NSToolbarItem.customView
-// for this preference pane.
+// If this is property is implemented, the returned NSView will be used
+// as the NSToolbarItem.customView for this preference pane.
 //
-// If this is property is present, the returned NSView will be used
-// in the NSToolbarItem for this view controller.
-//
-// If this property is present, toolbarItemImage will be ignored.
+// If this property is implemented, toolbarItemImage will be ignored.
 // Either this property or toolbarItemImage must be implemented.
 @property (nonatomic, readonly, strong) NSView *toolbarItemView;
 

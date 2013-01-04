@@ -5,7 +5,7 @@ NSString *const kMASPreferencesWindowControllerDidChangeViewNotification = @"MAS
 static NSString *const kMASPreferencesFrameTopLeftKey = @"MASPreferences Frame Top Left";
 static NSString *const kMASPreferencesSelectedViewKey = @"MASPreferences Selected Identifier View";
 
-static NSString *const MASPreferencesToolbarItemIdentifierKey = @"MASPreferencesToolbarItemIdentifierKey";
+static void * MASPreferencesToolbarItemIdentifierKey = &MASPreferencesToolbarItemIdentifierKey;
 
 static NSString *const PreferencesKeyForViewBounds (NSString *identifier)
 {
@@ -185,7 +185,7 @@ static NSString *const PreferencesKeyForViewBounds (NSString *identifier)
             [button sizeToFit];
         }
         
-        objc_setAssociatedObject(button, &MASPreferencesToolbarItemIdentifierKey, itemIdentifier, OBJC_ASSOCIATION_COPY_NONATOMIC);
+        objc_setAssociatedObject(button, MASPreferencesToolbarItemIdentifierKey, itemIdentifier, OBJC_ASSOCIATION_COPY_NONATOMIC);
         
         button.target = self;
         button.action = @selector(toolbarItemDidClick:);
@@ -319,7 +319,7 @@ static NSString *const PreferencesKeyForViewBounds (NSString *identifier)
 
 - (void)toolbarItemDidClick:(id)sender
 {
-    NSString *itemIdentifier = objc_getAssociatedObject(sender, &MASPreferencesToolbarItemIdentifierKey);
+    NSString *itemIdentifier = objc_getAssociatedObject(sender, MASPreferencesToolbarItemIdentifierKey);
     if (itemIdentifier == nil) return;
 
     self.selectedViewController = [self viewControllerForIdentifier:itemIdentifier];

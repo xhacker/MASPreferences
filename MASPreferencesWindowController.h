@@ -33,6 +33,7 @@ __attribute__((__visibility__("default")))
 // The size for each toolbar item.
 //
 // If NSZeroSize, default NSToolbar fitting behaviour will be used (ie. sizeToFit).
+// The default value is NSZeroSize
 @property (nonatomic, assign) NSSize toolbarItemSize;
 
 - (id)initWithViewControllers:(NSArray *)viewControllers;

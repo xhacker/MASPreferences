@@ -166,10 +166,10 @@ static NSString *const PreferencesKeyForViewBounds (NSString *identifier)
 
         NSMutableParagraphStyle *paragraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
         paragraphStyle.alignment = NSCenterTextAlignment;
-        NSShadow *whiteShadow = [[NSShadow alloc] init];
-        [whiteShadow setShadowBlurRadius:1];
-        [whiteShadow setShadowOffset:CGSizeMake(0, -0.5)];
-        [whiteShadow setShadowColor:NSColor.whiteColor];
+        NSShadow *whiteShadow = [[[NSShadow alloc] init] autorelease];
+        whiteShadow.shadowBlurRadius = 1;
+        whiteShadow.shadowOffset = CGSizeMake(0, -0.5);
+        whiteShadow.shadowColor = NSColor.whiteColor;
 
         NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:[NSFont systemFontOfSize:[NSFont smallSystemFontSize]], NSFontAttributeName, [NSColor colorWithCalibratedWhite:0.2 alpha:1.0], NSForegroundColorAttributeName, whiteShadow, NSShadowAttributeName, paragraphStyle, NSParagraphStyleAttributeName, nil];
 

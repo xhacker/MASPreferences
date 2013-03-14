@@ -101,16 +101,24 @@ static NSString * const MASPreferencesLeadingSpaceItemIdentifier = @"MASPreferen
 #pragma mark -
 #pragma mark Accessors
 
-- (NSArray *)toolbarItemIdentifiers
+- (NSArray *)unpaddedItemIdentifiers
 {
-    NSMutableArray *identifiers = [NSMutableArray arrayWithCapacity:_viewControllers.count + 1];
-    [identifiers addObject:MASPreferencesLeadingSpaceItemIdentifier];
+    NSMutableArray *identifiers = [NSMutableArray arrayWithCapacity:_viewControllers.count];
     for (id viewController in _viewControllers)
         if (viewController == [NSNull null])
             [identifiers addObject:NSToolbarFlexibleSpaceItemIdentifier];
         else
             [identifiers addObject:[viewController identifier]];
     return identifiers;
+}
+
+- (NSArray *)toolbarItemIdentifiers {
+    NSMutableArray *paddedIdentifiers = [NSMutableArray arrayWithCapacity:_viewControllers.count*2];
+    for (NSString *identifier in self.unpaddedItemIdentifiers) {
+        [paddedIdentifiers addObject:MASPreferencesLeadingSpaceItemIdentifier];
+        [paddedIdentifiers addObject:identifier];
+    }
+    return paddedIdentifiers;
 }
 
 #pragma mark -
@@ -147,19 +155,19 @@ static NSString * const MASPreferencesLeadingSpaceItemIdentifier = @"MASPreferen
     NSToolbarItem *toolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier:itemIdentifier];
     
     if ([itemIdentifier isEqualToString:MASPreferencesLeadingSpaceItemIdentifier]) {
-        NSView *spacerView = [[[NSView alloc] initWithFrame:NSMakeRect(0, 0, -5.0, 0)] autorelease];
+        NSView *spacerView = [[[NSView alloc] initWithFrame:NSMakeRect(0, 0, -4, 0)] autorelease];
         toolbarItem.view  = spacerView;
         return [toolbarItem autorelease];
     }
 
-    NSArray *identifiers = self.toolbarItemIdentifiers;
-    NSUInteger controllerIndex = [identifiers indexOfObject:itemIdentifier] - 1;
+    NSArray *identifiers = self.unpaddedItemIdentifiers;
+    NSUInteger controllerIndex = [identifiers indexOfObject:itemIdentifier];
     if (controllerIndex != NSNotFound)
     {
         id <MASPreferencesViewController> controller = [_viewControllers objectAtIndex:controllerIndex];
 
         // NSToolbarItem target and actions are forwarded to a custom NSView (when present).
-        NSRect buttonFrame = { .origin = NSZeroPoint, .size = self.toolbarItemSize };
+        NSRect itemFrame = { .origin = NSZeroPoint, .size = self.toolbarItemSize };
 
         NSMutableParagraphStyle *paragraphStyle = [[[NSParagraphStyle defaultParagraphStyle] mutableCopy] autorelease];
         paragraphStyle.alignment = NSCenterTextAlignment;
@@ -171,27 +179,29 @@ static NSString * const MASPreferencesLeadingSpaceItemIdentifier = @"MASPreferen
         NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:[NSFont systemFontOfSize:[NSFont smallSystemFontSize]], NSFontAttributeName, [NSColor colorWithCalibratedWhite:0.2 alpha:1.0], NSForegroundColorAttributeName, whiteShadow, NSShadowAttributeName, paragraphStyle, NSParagraphStyleAttributeName, nil];
 
         NSAttributedString *attributedTitle = [[[NSAttributedString alloc] initWithString:controller.toolbarItemLabel attributes:attributes] autorelease];
-
-        // Add height for the title
-        buttonFrame.size.height += attributedTitle.size.height;
-        buttonFrame.size.width = MAX(attributedTitle.size.width, buttonFrame.size.width);
         
-        NSButton *button = [[[NSButton alloc] initWithFrame:buttonFrame] autorelease];
+        NSButton *button = [[[NSButton alloc] initWithFrame:itemFrame] autorelease];
         button.image = controller.toolbarItemImage;
         button.imagePosition = NSImageAbove;
         button.buttonType = NSMomentaryChangeButton;
         button.bordered = NO;
         button.attributedTitle = attributedTitle;
-
-        if (NSEqualSizes(self.toolbarItemSize, NSZeroSize)) {
-            [button sizeToFit];
-        }
+        [button sizeToFit];
+        
+        NSRect buttonFrame = itemFrame;
+        buttonFrame.origin.x = 0.0;
+        buttonFrame.origin.y = -3.0;
+        button.frame = buttonFrame;
         
         objc_setAssociatedObject(button, MASPreferencesToolbarItemIdentifierKey, itemIdentifier, OBJC_ASSOCIATION_COPY_NONATOMIC);
         
         button.target = self;
         button.action = @selector(toolbarItemDidClick:);
-        toolbarItem.view = button;
+        
+        NSView *containerView = [[[NSView alloc] initWithFrame:itemFrame] autorelease];
+        [containerView addSubview:button];
+        
+        toolbarItem.view = containerView;
     }
     return [toolbarItem autorelease];
 }

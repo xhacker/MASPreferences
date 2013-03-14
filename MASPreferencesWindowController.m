@@ -8,6 +8,8 @@ static NSString *const kMASPreferencesSelectedViewKey = @"MASPreferences Selecte
 
 static void * MASPreferencesToolbarItemIdentifierKey = &MASPreferencesToolbarItemIdentifierKey;
 
+static NSString * const MASPreferencesLeadingSpaceItemIdentifier = @"MASPreferencesLeadingSpaceItemIdentifier";
+
 @interface MASPreferencesWindowController () // Private
 
 - (NSViewController <MASPreferencesViewController> *)viewControllerForIdentifier:(NSString *)identifier;
@@ -101,7 +103,8 @@ static void * MASPreferencesToolbarItemIdentifierKey = &MASPreferencesToolbarIte
 
 - (NSArray *)toolbarItemIdentifiers
 {
-    NSMutableArray *identifiers = [NSMutableArray arrayWithCapacity:_viewControllers.count];
+    NSMutableArray *identifiers = [NSMutableArray arrayWithCapacity:_viewControllers.count + 1];
+    [identifiers addObject:MASPreferencesLeadingSpaceItemIdentifier];
     for (id viewController in _viewControllers)
         if (viewController == [NSNull null])
             [identifiers addObject:NSToolbarFlexibleSpaceItemIdentifier];
@@ -142,8 +145,15 @@ static void * MASPreferencesToolbarItemIdentifierKey = &MASPreferencesToolbarIte
 - (NSToolbarItem *)toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)itemIdentifier willBeInsertedIntoToolbar:(BOOL)flag
 {
     NSToolbarItem *toolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier:itemIdentifier];
+    
+    if ([itemIdentifier isEqualToString:MASPreferencesLeadingSpaceItemIdentifier]) {
+        NSView *spacerView = [[[NSView alloc] initWithFrame:NSMakeRect(0, 0, -5.0, 0)] autorelease];
+        toolbarItem.view  = spacerView;
+        return [toolbarItem autorelease];
+    }
+
     NSArray *identifiers = self.toolbarItemIdentifiers;
-    NSUInteger controllerIndex = [identifiers indexOfObject:itemIdentifier];
+    NSUInteger controllerIndex = [identifiers indexOfObject:itemIdentifier] - 1;
     if (controllerIndex != NSNotFound)
     {
         id <MASPreferencesViewController> controller = [_viewControllers objectAtIndex:controllerIndex];

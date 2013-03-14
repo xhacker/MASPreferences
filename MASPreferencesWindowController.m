@@ -64,6 +64,8 @@ static NSString * const MASPreferencesLeadingSpaceItemIdentifier = @"MASPreferen
 
 - (void)windowDidLoad
 {
+    [self repositionTrafficLights];
+
     if ([self.title length] > 0)
         [[self window] setTitle:self.title];
 
@@ -75,6 +77,7 @@ static NSString * const MASPreferencesLeadingSpaceItemIdentifier = @"MASPreferen
         [self.window setFrameTopLeftPoint:NSPointFromString(origin)];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(windowDidMove:) name:NSWindowDidMoveNotification object:self.window];
+    
 }
 
 - (NSViewController <MASPreferencesViewController> *)firstViewController {
@@ -83,6 +86,22 @@ static NSString * const MASPreferencesLeadingSpaceItemIdentifier = @"MASPreferen
             return viewController;
 
     return nil;
+}
+
+- (void)repositionTrafficLights {
+    NSButton *closeButton = [self.window standardWindowButton:NSWindowCloseButton];
+    NSButton *miniatureizeButton = [self.window standardWindowButton:NSWindowMiniaturizeButton];
+    NSButton *zoomButton = [self.window standardWindowButton:NSWindowZoomButton];
+
+    void(^repositionButton)(NSButton *button) = ^(NSButton *button) {
+        NSRect frame = button.frame;
+        frame.origin.y -= 3;
+        button.frame = frame;
+    };
+    
+    repositionButton(closeButton);
+    repositionButton(miniatureizeButton);
+    repositionButton(zoomButton);
 }
 
 #pragma mark -
@@ -96,6 +115,10 @@ static NSString * const MASPreferencesLeadingSpaceItemIdentifier = @"MASPreferen
 - (void)windowDidMove:(NSNotification*)aNotification
 {
     [[NSUserDefaults standardUserDefaults] setObject:NSStringFromPoint(NSMakePoint(NSMinX([self.window frame]), NSMaxY([self.window frame]))) forKey:kMASPreferencesFrameTopLeftKey];
+}
+
+- (void)windowDidResize:(NSNotification *)notification {
+    [self repositionTrafficLights];
 }
 
 #pragma mark -

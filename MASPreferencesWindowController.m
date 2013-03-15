@@ -155,6 +155,7 @@ static NSString * const MASPreferencesLeadingSpaceItemIdentifier = @"MASPreferen
     NSToolbarItem *toolbarItem = [[NSToolbarItem alloc] initWithItemIdentifier:itemIdentifier];
     
     if ([itemIdentifier isEqualToString:MASPreferencesLeadingSpaceItemIdentifier]) {
+        // Use a negative width here to make up for the default padding that NSToolbarItem appears to include.
         NSView *spacerView = [[[NSView alloc] initWithFrame:NSMakeRect(0, 0, -4, 0)] autorelease];
         toolbarItem.view = spacerView;
         return [toolbarItem autorelease];
@@ -190,6 +191,7 @@ static NSString * const MASPreferencesLeadingSpaceItemIdentifier = @"MASPreferen
         
         NSRect buttonFrame = itemFrame;
         buttonFrame.origin.x = 0.0;
+        // Move the button closer to the bottom of the toolbar
         buttonFrame.origin.y = -3.0;
         button.frame = buttonFrame;
         

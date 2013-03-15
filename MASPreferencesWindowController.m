@@ -156,7 +156,7 @@ static NSString * const MASPreferencesLeadingSpaceItemIdentifier = @"MASPreferen
     
     if ([itemIdentifier isEqualToString:MASPreferencesLeadingSpaceItemIdentifier]) {
         NSView *spacerView = [[[NSView alloc] initWithFrame:NSMakeRect(0, 0, -4, 0)] autorelease];
-        toolbarItem.view  = spacerView;
+        toolbarItem.view = spacerView;
         return [toolbarItem autorelease];
     }
 
@@ -208,22 +208,6 @@ static NSString * const MASPreferencesLeadingSpaceItemIdentifier = @"MASPreferen
 
 #pragma mark -
 #pragma mark Private methods
-
-- (void)repositionTrafficLights {
-    NSButton *closeButton = [self.window standardWindowButton:NSWindowCloseButton];
-    NSButton *miniatureizeButton = [self.window standardWindowButton:NSWindowMiniaturizeButton];
-    NSButton *zoomButton = [self.window standardWindowButton:NSWindowZoomButton];
-    
-    void(^repositionButton)(NSButton *button) = ^(NSButton *button) {
-        NSRect frame = button.frame;
-        frame.origin.y -= 3;
-        button.frame = frame;
-    };
-    
-    repositionButton(closeButton);
-    repositionButton(miniatureizeButton);
-    repositionButton(zoomButton);
-}
 
 - (void)clearResponderChain
 {

@@ -64,8 +64,6 @@ static NSString * const MASPreferencesLeadingSpaceItemIdentifier = @"MASPreferen
 
 - (void)windowDidLoad
 {
-    [self repositionTrafficLights];
-
     if ([self.title length] > 0)
         [[self window] setTitle:self.title];
 
@@ -98,10 +96,6 @@ static NSString * const MASPreferencesLeadingSpaceItemIdentifier = @"MASPreferen
 - (void)windowDidMove:(NSNotification*)aNotification
 {
     [[NSUserDefaults standardUserDefaults] setObject:NSStringFromPoint(NSMakePoint(NSMinX([self.window frame]), NSMaxY([self.window frame]))) forKey:kMASPreferencesFrameTopLeftKey];
-}
-
-- (void)windowDidResize:(NSNotification *)notification {
-    [self repositionTrafficLights];
 }
 
 #pragma mark -
